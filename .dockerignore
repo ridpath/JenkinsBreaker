@@ -1,0 +1,71 @@
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+tests/
+*.log
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Documentation
+docs/
+*.md
+!README.md
+
+# Reports and outputs
+reports/
+outputs/
+loot/
+*.json
+*.csv
+*.html
+*.pdf
+
+# Screenshots
+screenshots/
+
+# Test data
+test_data/
+extracted_creds/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# CI/CD
+.github/
+
+# Secrets
+master.key
+hudson.util.Secret
+credentials.xml
+config/targets.yaml
+config/credentials.yaml
+.env
+.env.local

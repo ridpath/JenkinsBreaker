@@ -1,0 +1,66 @@
+# JenkinsBreaker Target Configuration
+# Copy to targets.yaml and customize for your environment
+
+targets:
+  # Local testing environment
+  jenkins_lab:
+    url: "http://localhost:8080"
+    username: "admin"
+    password: "admin"
+    description: "Local Jenkins Lab for exploit testing"
+    tags:
+      - local
+      - testing
+      - vulnerable
+
+  # CTF environment template
+  ctf_target:
+    url: "http://target.htb:8080"
+    username: "anonymous"  # Set to null if no auth
+    password: null
+    description: "HackTheBox/CTF target"
+    tags:
+      - ctf
+      - htb
+    proxy: null  # Example: "http://127.0.0.1:8080"
+
+  # Red team engagement template
+  production_jenkins:
+    url: "https://jenkins.company.com"
+    username: "${JENKINS_USER}"  # Use environment variables
+    password: "${JENKINS_PASS}"
+    description: "Production Jenkins (authorized testing only)"
+    tags:
+      - production
+      - engagement
+    verify_ssl: false
+    timeout: 30
+    proxy: null
+
+# Global settings
+settings:
+  # Request configuration
+  timeout: 30
+  verify_ssl: false
+  user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+  
+  # Rate limiting (requests per second)
+  rate_limit: 5
+  
+  # Proxy configuration (applies to all targets unless overridden)
+  proxy:
+    http: null
+    https: null
+  
+  # Retry configuration
+  retries: 3
+  retry_delay: 2
+  
+  # Output directories
+  output:
+    loot: "./loot"
+    reports: "./reports"
+    logs: "./logs"
+  
+  # Logging level (DEBUG, INFO, WARNING, ERROR)
+  log_level: "INFO"

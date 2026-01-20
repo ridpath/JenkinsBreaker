@@ -1,0 +1,34 @@
+# Gitleaks ignore file for JenkinsBreaker
+# These are intentional test credentials and secrets for jenkins-lab testing
+
+# Test credentials in jenkins-lab
+jenkins-lab/**
+tests/data/**
+tests/docker/**
+
+# Example configurations
+config/*.example.yaml
+examples/**
+
+# Documentation with example credentials
+*.md:admin:admin
+*.md:password
+*.md:secret
+docs/**
+
+# Test fixtures
+tests/fixtures/**
+
+# Known test credentials (not real secrets)
+# Jenkins lab admin credentials
+admin:admin
+JENKINS_USER=admin
+JENKINS_PASS=admin
+
+# AWS test keys (fake)
+AKIAIOSFODNN7EXAMPLE
+wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+
+# SSH test keys
+tests/data/test_id_rsa
+jenkins-lab/jenkins/ssh/id_rsa

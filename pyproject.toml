@@ -1,0 +1,164 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "jenkins-breaker"
+version = "2.0.0"
+description = "CI/CD Exploitation Framework for Jenkins Infrastructure Assessment"
+readme = "README.md"
+requires-python = ">=3.9"
+license = {text = "MIT"}
+authors = [
+    {name = "ridpath"}
+]
+keywords = ["jenkins", "exploitation", "security", "red-team", "penetration-testing", "ci-cd"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Information Technology",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Security",
+]
+
+dependencies = [
+    "requests>=2.31.0",
+    "pycryptodome>=3.19.0",
+    "jinja2>=3.1.2",
+    "rich>=13.7.0",
+    "tabulate>=0.9.0",
+    "dnspython>=2.4.2",
+    "pyjwt>=2.8.0",
+    "websockets>=12.0",
+    "fastapi>=0.109.0",
+    "uvicorn[standard]>=0.27.0",
+    "textual>=0.48.0",
+    "packaging>=23.2",
+    "python-multipart>=0.0.6",
+    "aiofiles>=23.2.1",
+    "pyyaml>=6.0.1",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+    "pytest-asyncio>=0.21.0",
+    "mypy>=1.7.0",
+    "ruff>=0.1.8",
+    "types-requests>=2.31.0",
+    "types-PyYAML>=6.0.0",
+]
+pdf = [
+    "weasyprint>=60.1",
+]
+
+[project.scripts]
+jenkins-breaker = "jenkins_breaker.__main__:main"
+
+[project.urls]
+Homepage = "https://github.com/ridpath/JenkinsBreaker"
+Repository = "https://github.com/ridpath/JenkinsBreaker"
+Issues = "https://github.com/ridpath/JenkinsBreaker/issues"
+
+[tool.setuptools]
+packages = {find = {where = ["src"]}}
+package-dir = {"" = "src"}
+
+[tool.setuptools.package-data]
+jenkins_breaker = ["reporting/templates/*.html", "reporting/templates/*.md"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "-v",
+    "--strict-markers",
+    "--tb=short",
+    "--cov=jenkins_breaker",
+    "--cov-report=term-missing",
+    "--cov-report=html",
+]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests (requires Docker)",
+]
+
+[tool.mypy]
+python_version = "3.9"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = false
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+follow_imports = "normal"
+ignore_missing_imports = true
+
+[tool.ruff]
+line-length = 100
+target-version = "py39"
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "C",   # flake8-comprehensions
+    "B",   # flake8-bugbear
+    "UP",  # pyupgrade
+]
+ignore = [
+    "E501",  # line too long (handled by formatter)
+    "B008",  # do not perform function calls in argument defaults
+    "C901",  # too complex
+    "B904",  # raise ... from err
+    "B027",  # empty method in ABC
+]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401"]  # unused imports in __init__.py
+"tests/*" = ["S101"]      # assert usage in tests
+
+[tool.coverage.run]
+source = ["src"]
+omit = [
+    "*/tests/*",
+    "*/test_*.py",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+    "class .*\\bProtocol\\):",
+    "@(abc\\.)?abstractmethod",
+]
+
+[tool.bandit]
+exclude_dirs = [
+    "tests",
+    "src/jenkins_breaker/modules",
+    "src/jenkins_breaker/payloads",
+    "exploits",
+]
+skips = [
+    "B404",  # import subprocess
+    "B603",  # subprocess without shell=True
+    "B607",  # start_process_with_partial_path
+]

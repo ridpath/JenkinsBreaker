@@ -1,0 +1,65 @@
+version: '3.8'
+
+services:
+  jenkins-old:
+    build:
+      context: ./jenkins
+      dockerfile: Dockerfile
+    container_name: jenkins-lab-old
+    hostname: jenkins-lab-old
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+    environment:
+      - JENKINS_OPTS=--prefix=/
+      - JAVA_OPTS=-Djenkins.install.runSetupWizard=false -Dhudson.security.csrf.GlobalCrumbIssuerConfiguration.DISABLE_CSRF_PROTECTION=true
+    volumes:
+      - jenkins_old_home:/var/jenkins_home
+    networks:
+      - jenkins-network
+    restart: unless-stopped
+
+  jenkins-mid:
+    build:
+      context: ./jenkins-mid
+      dockerfile: Dockerfile
+    container_name: jenkins-lab-mid
+    hostname: jenkins-lab-mid
+    ports:
+      - "8081:8080"
+      - "50001:50000"
+    environment:
+      - JENKINS_OPTS=--prefix=/
+      - JAVA_OPTS=-Djenkins.install.runSetupWizard=false -Dhudson.security.csrf.GlobalCrumbIssuerConfiguration.DISABLE_CSRF_PROTECTION=true
+    volumes:
+      - jenkins_mid_home:/var/jenkins_home
+    networks:
+      - jenkins-network
+    restart: unless-stopped
+
+  jenkins-new:
+    build:
+      context: ./jenkins-new
+      dockerfile: Dockerfile
+    container_name: jenkins-lab-new
+    hostname: jenkins-lab-new
+    ports:
+      - "8082:8080"
+      - "50002:50000"
+    environment:
+      - JENKINS_OPTS=--prefix=/
+      - JAVA_OPTS=-Djenkins.install.runSetupWizard=false -Dhudson.security.csrf.GlobalCrumbIssuerConfiguration.DISABLE_CSRF_PROTECTION=true
+    volumes:
+      - jenkins_new_home:/var/jenkins_home
+    networks:
+      - jenkins-network
+    restart: unless-stopped
+
+networks:
+  jenkins-network:
+    driver: bridge
+
+volumes:
+  jenkins_old_home:
+  jenkins_mid_home:
+  jenkins_new_home:

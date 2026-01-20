@@ -1,0 +1,146 @@
+# Test & Debug Scripts (root level only)
+/test_*.py
+/check_*.py
+/debug_*.py
+/diagnose_*.py
+/create_remaining_scripts.py
+
+
+# Test artifacts
+.zenflow/tasks/*/test_scripts/*.log
+.zenflow/tasks/*/test_scripts/output/
+*.pyc
+__pycache__/
+.pytest_cache/
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+*.cover
+.hypothesis/
+.tox/
+
+# Logs (project and external debug logs)
+logs/
+*.log
+debug.log
+/C:/Users/*/cve_table_refresh.log
+/C:/Users/*/listener_debug.log
+/C:/Users/*/tui_append_debug.log
+/C:/Users/*/tui_recv_debug.log
+/C:/Users/*/tui_table_debug.log
+
+# Loot (sensitive data)
+loot/
+*.loot
+*.creds
+
+# Runtime data & sessions
+workspace/
+sessions/
+*.session
+*.db
+*.sqlite
+*.sqlite3
+
+# Application logs
+jenkinsbreaker.log
+listener_debug.log
+
+# Environment & Secrets
+.env
+.env.local
+.env.*.local
+.venv/
+venv/
+env/
+*.key
+*.pem
+*.p12
+*.pfx
+api_keys.txt
+tokens.txt
+credentials.txt
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary
+*.tmp
+*.bak
+tmp/
+temp/
+-p/
+
+# Screenshots & Test Output
+output/
+results/
+*.png
+*.jpg
+*.jpeg
+*.gif
+!docs/**/*.png
+!docs/**/*.jpg
+!README_assets/*.png
+
+# Development Notes & Analysis (exclude from repo)
+/BEFORE_AFTER_COMPARISON.md
+/INDIVIDUAL_EXPLOIT_BUG_SUMMARY.md
+/ROOT_CAUSE_FOUND.md
+/UI_IMPLEMENTATION.md
+/exclude.txt
+/copy_source.bat
+
+# Task documentation and sprint reports
+.zenflow/tasks/**/*.md
+.zenflow/tasks/**/docs/
+
+# Cache directories
+.ruff_cache/
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+*.ipynb
+
+# Node (if any web components added)
+node_modules/
+package-lock.json
+yarn.lock
+
+# Jenkins Lab
+jenkins-lab/data/
+.zenflow/tasks/*/test_scripts/*.json
+.zenflow/tasks/*/test_scripts/output/
+
+# Python
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
