@@ -188,6 +188,6 @@ echo ""
 cat "$OUTPUT_DIR/BENCHMARK_REPORT.txt"
 
 echo ""
-echo "📁 Full results: $OUTPUT_DIR/BENCHMARK_REPORT.txt"
-echo "📊 CSV data: $OUTPUT_DIR/timings.csv"
+echo "Full results: $OUTPUT_DIR/BENCHMARK_REPORT.txt"
+echo "CSV data: $OUTPUT_DIR/timings.csv"
 echo ""
