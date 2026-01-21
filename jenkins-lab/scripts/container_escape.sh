@@ -308,10 +308,10 @@ echo "=========================================="
 echo "         ESCAPE ANALYSIS SUMMARY"
 echo "=========================================="
 echo ""
-echo "🎯 Escape Vectors: $ESCAPE_VECTORS"
-echo "✅ Exploitable: $ESCAPE_SUCCESS"
+echo "Escape Vectors: $ESCAPE_VECTORS"
+echo "Exploitable: $ESCAPE_SUCCESS"
 echo ""
-echo "📁 Output Directory: $OUTPUT_DIR"
+echo "Output Directory: $OUTPUT_DIR"
 echo ""
 echo "Key Files:"
 echo "  - ESCAPE_ANALYSIS.txt (full report)"
@@ -320,13 +320,13 @@ echo "  - post-escape-actions.sh (post-exploitation)"
 echo ""
 
 if [[ $ESCAPE_VECTORS -gt 0 ]]; then
-    echo "⚠️  WARNING: Container escape is possible!"
+    echo "WARNING: Container escape is possible!"
     echo ""
     echo "Test exploits:"
     for exploit in "$OUTPUT_DIR"/exploit-*.sh; do
         [[ -f "$exploit" ]] && echo "  bash $exploit"
     done
 else
-    echo "✅ Container appears well-configured against escape"
+    echo "Container appears well-configured against escape"
 fi
 echo ""
